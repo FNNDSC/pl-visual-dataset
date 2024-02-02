@@ -41,7 +41,7 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     order = [name.strip() for name in ','.strip(options.order)]
     print(DISPLAY_TITLE, flush=True)
     shutil.copytree(inputdir, outputdir, dirs_exist_ok=True)
-    for folder in folders(outputdir):
+    for folder in subject_folders(outputdir):
         files = [p for p in folder.glob('*') if p.is_file()]
         preferred = get_preferred_file(files, order)
         for file in files:
@@ -69,14 +69,18 @@ def get_preferred_file(files: Sequence[Path], order: Sequence[str]) -> Path:
     return files[0]
 
 
-def folders(p: Path) -> Iterable[Path]:
-    return filter(is_nonempty_dir, p.glob('*'))
+def subject_folders(p: Path) -> Iterable[Path]:
+    return filter(is_dir_containing_nifti, p.glob('*'))
 
 
-def is_nonempty_dir(p: Path) -> bool:
+def is_dir_containing_nifti(p: Path) -> bool:
     if not p.is_dir():
         return False
-    return next(p.glob('*'), None) is not None
+    return next(filter(is_nifti_file, p.glob('*.nii.gz')), None) is not None
+
+
+def is_nifti_file(p: Path):
+    return p.is_file() and p.name.endswith('.nii.gz')
 
 
 def is_nifti(p: Path) -> bool:
@@ -105,7 +109,7 @@ def delete_file_and_empty_parents(root: Path, fname: str):
     if not p.is_file():
         return
     p.unlink()
-    delete_empty_dirs(p.resolve(), root.resolve())
+    delete_empty_dirs(p.parent.resolve(), root.resolve())
 
 
 def delete_empty_dirs(p: Path, root: Path):
