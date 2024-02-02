@@ -19,18 +19,18 @@ def get_version(rel_path: str) -> str:
 
 
 setup(
-    name='chris-plugin-template',
-    version=get_version('app.py'),
-    description='A ChRIS DS plugin template',
+    name='publish-chris-dataset',
+    version=get_version('pubchrisvisual/__init__.py'),
+    description='Mark the outputs of a feed as compatible with the public dataset viewer feature of ChRIS_ui.',
     author='FNNDSC',
-    author_email='dev@babyMRI.org',
-    url='https://github.com/FNNDSC/python-chrisapp-template',
-    py_modules=['app'],
+    author_email='dev@babymri.org',
+    url='https://github.com/FNNDSC/pl-visual-dataset',
+    packages=['pubchrisvisual'],
     install_requires=['chris_plugin'],
     license='MIT',
     entry_points={
         'console_scripts': [
-            'commandname = app:main'
+            'pubone = pubchrisvisual.one:main'
         ]
     },
     classifiers=[

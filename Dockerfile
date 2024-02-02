@@ -1,13 +1,13 @@
 # Python version can be changed, e.g.
 # FROM python:3.8
 # FROM ghcr.io/mamba-org/micromamba:1.5.1-focal-cuda-11.3.1
-FROM docker.io/python:3.12.0-slim-bookworm
+FROM docker.io/python:3.12.1-slim-bookworm
 
-LABEL org.opencontainers.image.authors="FNNDSC <dev@babyMRI.org>" \
-      org.opencontainers.image.title="ChRIS Plugin Title" \
-      org.opencontainers.image.description="A ChRIS plugin that..."
+LABEL org.opencontainers.image.authors="FNNDSC <dev@babymri.org>" \
+      org.opencontainers.image.title="Publish ChRIS Public Dataset" \
+      org.opencontainers.image.description="Mark the outputs of a feed as compatible with the public dataset viewer feature of ChRIS_ui."
 
-ARG SRCDIR=/usr/local/src/app
+ARG SRCDIR=/usr/local/src/pl-visual-dataset
 WORKDIR ${SRCDIR}
 
 COPY requirements.txt .
@@ -19,4 +19,4 @@ RUN pip install ".[${extras_require}]" \
     && cd / && rm -rf ${SRCDIR}
 WORKDIR /
 
-CMD ["commandname"]
+CMD ["pub"]
