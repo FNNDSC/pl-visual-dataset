@@ -17,7 +17,8 @@ parser = ArgumentParser(description='Adds options for viewing one file of each s
 parser.add_argument('--order', type=str,
                     help='Order of preference for file names as a comma-separated list')
 parser.add_argument('--options', type=str, default='{}',
-                    help='Mapping of file names to default Niivue options as stringified JSON')
+                    help='Mapping of file names to default Niivue options. '
+                         'Should either be a relative path or stringified JSON')
 parser.add_argument('--readme', type=str,
                     help='README file content')
 
@@ -36,7 +37,7 @@ _OPTIONS_ADAPTER = TypeAdapter(ChrisViewerFileOptions)
     min_cpu_limit='200m',
 )
 def main(options: Namespace, inputdir: Path, outputdir: Path):
-    configs = deserialize_mapping(options.options)
+    configs = deserialize_mapping(path_or_fname(inputdir, options.options))
     order = [name.strip() for name in ','.strip(options.order)]
     print(DISPLAY_TITLE, flush=True)
     shutil.copytree(inputdir, outputdir, dirs_exist_ok=True)
@@ -54,6 +55,8 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
 
     if options.readme is not None:
         (outputdir / 'README.txt').write_text(options.readme)
+
+    delete_file_and_empty_parents(outputdir, options.options)
 
     (outputdir / '.chrisvisualdataset.root.json').write_text('{}')
 
@@ -90,6 +93,28 @@ def deserialize_mapping(x: str) -> dict[str, ChrisViewerFileOptions]:
                 del error['url']
             print(json.dumps(error))
         sys.exit(1)
+
+
+def path_or_fname(parent_dir: Path, value: str):
+    p = parent_dir / value
+    return p.read_text() if p.is_file() else value
+
+
+def delete_file_and_empty_parents(root: Path, fname: str):
+    p = root / fname
+    if not p.is_file():
+        return
+    p.unlink()
+    delete_empty_dirs(p.resolve(), root.resolve())
+
+
+def delete_empty_dirs(p: Path, root: Path):
+    if p.resolve() == root:
+        return
+    if next(p.glob('*'), None) is not None:
+        return
+    p.rmdir()
+    delete_empty_dirs(p.parent, root)
 
 
 if __name__ == '__main__':

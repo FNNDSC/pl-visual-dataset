@@ -80,4 +80,4 @@ FILENAME_MAPPING: dict[str, ChrisViewerFileOptions] = {
 }
 
 if __name__ == "__main__":
-    json.dump(FILENAME_MAPPING, sys.stdout)
+    json.dump(FILENAME_MAPPING, sys.stdout, indent=2)
