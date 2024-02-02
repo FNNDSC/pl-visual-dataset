@@ -36,19 +36,19 @@ CRL_MRI_OPTIONS = ChrisViewerFileOptions(
         "Fetal Brain Growth Portrayed by a Spatiotemporal Diffusion Tensor MRI Atlas Computed From In Utero "
         "Images. NeuroImage 2018. https://doi.org/10.1016/j.neuroimage.2018.08.030"
     ],
-    options=MRI_OPTIONS
+    niivue_defaults=MRI_OPTIONS
 )
 
 CRL_REGIONAL_OPTIONS = CRL_MRI_OPTIONS | ChrisViewerFileOptions(
     name="Regional cortex parcellation",
     description="Regional cortex parcellation of the CRL fetal brain atlas.",
-    options=LABEL_OPTIONS
+    niivue_defaults=LABEL_OPTIONS
 )
 
 CRL_TISSUE_OPTIONS = CRL_MRI_OPTIONS | ChrisViewerFileOptions(
     name="Tissue segmentation (\"Olympic edition\")",
     description="Tissue segmentation of the CRL fetal brain atlas.",
-    options=LABEL_OPTIONS
+    niivue_defaults=LABEL_OPTIONS
 )
 
 KIHO_MRI_OPTIONS = ChrisViewerFileOptions(
@@ -57,7 +57,7 @@ KIHO_MRI_OPTIONS = ChrisViewerFileOptions(
     description="Fetal T2 atlas developed by the MRI group of the Fetal-Neonatal Neuroimaging Developmental Science "
                 "Center at the Boston Children's Hospital",
     website="https://research.childrenshospital.org/neuroim/",
-    options=MRI_OPTIONS
+    niivue_defaults=MRI_OPTIONS
 )
 
 SERAG_MRI_OPTIONS = ChrisViewerFileOptions(
@@ -65,7 +65,7 @@ SERAG_MRI_OPTIONS = ChrisViewerFileOptions(
     author="Imperial College London (Serag et al.)",
     description="Fetal T2 atlas developed at the Imperial College London.",
     website="https://brain-development.org/brain-atlases/fetal-brain-atlases/fetal-brain-atlas-serag/",
-    options=MRI_OPTIONS
+    niivue_defaults=MRI_OPTIONS
 )
 
 FILENAME_MAPPING: dict[str, ChrisViewerFileOptions] = {

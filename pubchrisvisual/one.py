@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import copy
 import json
 import shutil
 import sys
@@ -22,8 +23,8 @@ parser.add_argument('--options', type=str, default='{}',
 parser.add_argument('--readme', type=str,
                     help='README file content')
 
-VISIBLE = NiivueVolumeOptions(opacity=1.0, colormap='gray')
-INVISIBLE = NiivueVolumeOptions(opacity=0.0, colormap='gray')
+VISIBLE = NiivueVolumeOptions(opacity=1.0)
+INVISIBLE = NiivueVolumeOptions(opacity=0.0)
 
 _OPTIONS_MAPPING_ADAPTER = TypeAdapter(dict[str, ChrisViewerFileOptions])
 _OPTIONS_ADAPTER = TypeAdapter(ChrisViewerFileOptions)
@@ -38,20 +39,24 @@ _OPTIONS_ADAPTER = TypeAdapter(ChrisViewerFileOptions)
 )
 def main(options: Namespace, inputdir: Path, outputdir: Path):
     configs = deserialize_mapping(path_or_fname(inputdir, options.options))
-    order = [name.strip() for name in ','.strip(options.order)]
+    order = [name.strip() for name in options.order.split(',')] if options.order else []
     print(DISPLAY_TITLE, flush=True)
     shutil.copytree(inputdir, outputdir, dirs_exist_ok=True)
     for folder in subject_folders(outputdir):
-        files = [p for p in folder.glob('*') if p.is_file()]
+        files = [p for p in folder.glob('*.nii.gz') if p.is_file()]
         preferred = get_preferred_file(files, order)
         for file in files:
-            base_config = VISIBLE if file is preferred else INVISIBLE
-            config = (base_config | configs[file.name]) if file.name in configs else base_config
-            if config is base_config:
+            base_niivue_config: NiivueVolumeOptions = VISIBLE if file is preferred else INVISIBLE
+            file_config: ChrisViewerFileOptions = copy.deepcopy(configs[file.name]) if file.name in configs else {}
+            if 'niivue_defaults' not in file_config:
+                file_config['niivue_defaults'] = {}
+            file_config['niivue_defaults'] = base_niivue_config | file_config['niivue_defaults']
+
+            if file.name not in configs:
                 print(f"warning: no file name given by --options matches {file}")
             sidecar = file.with_suffix(file.suffix + '.chrisvisualdataset.volume.json')
             with sidecar.open('wb') as f:
-                f.write(_OPTIONS_ADAPTER.dump_json(config))
+                f.write(_OPTIONS_ADAPTER.dump_json(file_config))
 
     if options.readme is not None:
         (outputdir / 'README.txt').write_text(options.readme)

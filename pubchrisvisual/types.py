@@ -48,7 +48,7 @@ class ChrisViewerFileOptions(TypedDict):
     """
     Website for the dataset
     """
-    options: NotRequired[NiivueVolumeOptions]
+    niivue_defaults: NotRequired[NiivueVolumeOptions]
     """
     Default volume rendering options
     """
