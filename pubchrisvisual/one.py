@@ -56,7 +56,8 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     if options.readme is not None:
         (outputdir / 'README.txt').write_text(options.readme)
 
-    delete_file_and_empty_parents(outputdir, options.options)
+    if not options.options.startswith('{'):
+        delete_file_and_empty_parents(outputdir, options.options)
 
     (outputdir / '.chrisvisualdataset.root.json').write_text('{}')
 
@@ -100,6 +101,8 @@ def deserialize_mapping(x: str) -> dict[str, ChrisViewerFileOptions]:
 
 
 def path_or_fname(parent_dir: Path, value: str):
+    if value.startswith('{'):
+        return value
     p = parent_dir / value
     return p.read_text() if p.is_file() else value
 
