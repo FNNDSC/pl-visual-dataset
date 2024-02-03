@@ -8,6 +8,7 @@ from visualdataset.args_types import Matcher
 from visualdataset.index_nifti_dir import index_nifti_dir
 from visualdataset.manifest import VisualDatasetFile, OptionsLink, VisualDatasetManifest
 from visualdataset.nifti_sidecar import create_sidecar
+from visualdataset.validate import check_indexed_file_has_options
 
 
 def nifti_dataset(
@@ -24,6 +25,10 @@ def nifti_dataset(
     if not index:
         print(f'Error: nothing matched for: {[m.regex for m in matchers]}')
         sys.exit(1)
+
+    for file in index:
+        for warning_message in check_indexed_file_has_options(file, options):
+            print(warning_message)
 
     first_run_index_nums = find_first_run_files(input_dir, index, first_run_files)
 

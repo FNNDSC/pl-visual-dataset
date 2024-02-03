@@ -3,7 +3,7 @@ import pytest
 from pytest_unordered import unordered
 
 from visualdataset.index_nifti_dir import index_nifti_dir
-from tests.examples import FETAL_ATLAS_MATCHERS
+from tests.example_matchers import FETAL_ATLAS_MATCHERS
 from visualdataset.manifest import VisualDatasetFile
 
 
@@ -27,7 +27,7 @@ def test_index_dir(tmp_path: Path):
                 'age': '36',
                 'author': 'Ahmed Serag et al.',
                 'institution': 'Imperial College London',
-                'type': 'mri'
+                'type': 'T2 MRI'
             },
         ),
         VisualDatasetFile(
@@ -36,7 +36,7 @@ def test_index_dir(tmp_path: Path):
                 'age': '37',
                 'author': 'Ali Gholipour et al., CRL',
                 'institution': "Boston Children's Hospital",
-                'type': 'mri'
+                'type': 'T2 MRI'
             }
         ),
         VisualDatasetFile(
@@ -45,7 +45,8 @@ def test_index_dir(tmp_path: Path):
                 'age': '37',
                 'author': 'Ali Gholipour et al., CRL',
                 'institution': "Boston Children's Hospital",
-                'type': 'segmentation'
+                'type': 'labels',
+                'labels': 'parcellation'
             }
         ),
         VisualDatasetFile(
@@ -54,7 +55,8 @@ def test_index_dir(tmp_path: Path):
                 'age': '37',
                 'author': 'Ali Gholipour et al., CRL',
                 'institution': "Boston Children's Hospital",
-                'type': 'segmentation'
+                'type': 'labels',
+                'labels': 'tissue'
             }
         ),
     ]
