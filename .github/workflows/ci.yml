@@ -81,6 +81,14 @@ jobs:
           tags: ${{ steps.info.outputs.local_tag }}
           load: true
           cache-from: type=gha
+          build-args: extras_require=dev
+
+      - name: Unit tests
+        run: |
+          docker run --rm \
+            -v '${{ github.workspace }}:/src' -w /src \
+            ${{ steps.info.outputs.local_tag }} \
+            pytest -v --color=yes -o cache_dir=/tmp/pytest
 
       - name: Login to DockerHub
         if: (github.event_name == 'push' || github.event_name == 'release') && contains(steps.info.outputs.tags_csv, 'docker.io')

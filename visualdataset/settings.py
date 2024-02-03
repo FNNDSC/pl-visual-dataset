@@ -6,9 +6,9 @@ from typing import TypedDict, NotRequired, Sequence
 from pydantic import ConfigDict, TypeAdapter, HttpUrl
 
 
-class NiivueVolumeOptions(TypedDict):
+class NiivueVolumeSettings(TypedDict):
     """
-    Options supported by Niivue for volumes.
+    Settings supported by Niivue for volumes.
 
     https://github.com/niivue/niivue-react/blob/d56dcd2b3f58ce854686e77963f3a7a89599765f/src/model.ts#L30-L76
     """
@@ -48,7 +48,7 @@ class ChrisViewerFileOptions(TypedDict):
     """
     Website for the dataset
     """
-    niivue_defaults: NotRequired[NiivueVolumeOptions]
+    niivue_defaults: NotRequired[NiivueVolumeSettings]
     """
     Default volume rendering options
     """
