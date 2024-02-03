@@ -4,7 +4,7 @@ import numpy as np
 import nibabel as nib
 from pydantic import TypeAdapter
 
-from visualdataset.settings import NiivueVolumeSettings
+from visualdataset.options import NiivueVolumeSettings
 
 _SETTINGS_ADAPTER = TypeAdapter(NiivueVolumeSettings)
 

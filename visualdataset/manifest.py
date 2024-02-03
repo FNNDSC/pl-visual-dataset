@@ -2,7 +2,7 @@ from pathlib import PurePath
 from pydantic import BaseModel, ConfigDict
 from typing import Sequence, FrozenSet, Tuple, Mapping, Optional, Set
 
-from visualdataset.settings import ChrisViewerFileOptions
+from visualdataset.options import ChrisViewerFileOptions
 
 
 class VisualDatasetFile(BaseModel):

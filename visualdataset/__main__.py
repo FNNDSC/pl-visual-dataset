@@ -8,7 +8,7 @@ from pydantic import TypeAdapter
 from visualdataset import DISPLAY_TITLE
 from visualdataset.json_arg_parser import parse_args
 from visualdataset.nifti_dataset import nifti_dataset
-from visualdataset.settings import ChrisViewerFileOptions
+from visualdataset.options import ChrisViewerFileOptions
 
 parser = ArgumentParser(description='Prepares a dataset for use with the ChRIS_ui '
                                     '"Visual Datasets" feature.',
