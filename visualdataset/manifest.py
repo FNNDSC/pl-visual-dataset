@@ -29,7 +29,7 @@ class OptionsLink(BaseModel):
     """
     An association between some options and a set of tags.
     """
-    match: FrozenSet[Tuple[str, str]]
+    match: Mapping[str, str]
     options: ChrisViewerFileOptions
 
 
