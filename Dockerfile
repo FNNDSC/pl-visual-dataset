@@ -1,22 +1,26 @@
-# Python version can be changed, e.g.
-# FROM python:3.8
-# FROM ghcr.io/mamba-org/micromamba:1.5.1-focal-cuda-11.3.1
-FROM docker.io/python:3.12.1-slim-bookworm
+FROM docker.io/mambaorg/micromamba:1.5.5-bookworm-slim AS micromamba
+FROM micromamba AS builder
 
-LABEL org.opencontainers.image.authors="FNNDSC <dev@babymri.org>" \
-      org.opencontainers.image.title="Publish ChRIS Public Dataset" \
-      org.opencontainers.image.description="Mark the outputs of a feed as compatible with the public dataset viewer feature of ChRIS_ui."
+RUN \
+    --mount=type=cache,sharing=private,target=/home/mambauser/.mamba/pkgs,uid=57439,gid=57439 \
+    --mount=type=cache,sharing=private,target=/opt/conda/pkgs,uid=57439,gid=57439 \
+    micromamba -y -n base install -c conda-forge python=3.12.1 nibabel=5.2.0 numpy=1.26.3 tqdm=4.66.1 pydantic=2.6.0
 
-ARG SRCDIR=/usr/local/src/pl-visual-dataset
+ARG SRCDIR=/home/mambauser/pl-visual-dataset
+RUN mkdir "${SRCDIR}"
 WORKDIR ${SRCDIR}
 
 COPY requirements.txt .
-RUN --mount=type=cache,sharing=private,target=/root/.cache/pip pip install -r requirements.txt
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
+RUN pip install -r requirements.txt
 
-COPY . .
+COPY --chown=mambauser:mambauser . .
 ARG extras_require=none
-RUN pip install ".[${extras_require}]" \
-    && cd / && rm -rf ${SRCDIR}
+RUN pip install ".[${extras_require}]" && cd / && rm -rf ${SRCDIR}
 WORKDIR /
 
-CMD ["pub"]
+CMD ["visualdataset"]
+
+LABEL org.opencontainers.image.authors="FNNDSC <dev@babyMRI.org>" \
+      org.opencontainers.image.title="Create ChRIS Visual Dataset" \
+      org.opencontainers.image.description="Prepare a dataset for visualization with ChRIS_ui"

@@ -19,18 +19,18 @@ def get_version(rel_path: str) -> str:
 
 
 setup(
-    name='publish-chris-dataset',
-    version=get_version('pubchrisvisual/__init__.py'),
-    description='Mark the outputs of a feed as compatible with the public dataset viewer feature of ChRIS_ui.',
+    name='chrisvisualdataset',
+    version=get_version('visualdataset/__init__.py'),
+    description='Prepare the outputs of a feed for the "visual datasets" feature of ChRIS_ui.',
     author='FNNDSC',
     author_email='dev@babymri.org',
     url='https://github.com/FNNDSC/pl-visual-dataset',
-    packages=['pubchrisvisual'],
+    packages=['visualdataset'],
     install_requires=['chris_plugin'],
     license='MIT',
     entry_points={
         'console_scripts': [
-            'pubone = pubchrisvisual.one:main'
+            'visualdataset = visualdataset.__main__:main'
         ]
     },
     classifiers=[
@@ -42,7 +42,8 @@ setup(
     extras_require={
         'none': [],
         'dev': [
-            'pytest~=7.1'
+            'pytest~=8.0',
+            'pytest-unordered~=0.5.2'
         ]
     }
 )
