@@ -33,7 +33,7 @@ _DICT_ADAPTER = TypeAdapter(dict[str, str])
 
 @chris_plugin(
     parser=parser,
-    title='Single Volume ChRIS Visual Dataset',
+    title='ChRIS Visual Dataset Indexer',
     category='Utility',
     min_memory_limit='1Gi',
     min_cpu_limit='1000m',
