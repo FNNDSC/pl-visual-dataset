@@ -19,13 +19,16 @@ parser.add_argument('--options', type=str,
                     help='Metadata to go with tag sets')
 parser.add_argument('-s', '--string-args', action='store_true',
                     help='Interpret --matchers and --options as data instead of paths')
-parser.add_argument('--first-run-files', type=str,
+parser.add_argument('--first-run-files', type=str, default='[]',
                     help='List of files to show on first run, '
                          'as a stringified JSON list of paths relative to inputdir')
+parser.add_argument('--first-run-tags', type=str, default='{}',
+                    help='Tags to show on first run as a stringified JSON object')
 parser.add_argument('--readme', type=str,
                     help='README file content')
 
 _LIST_ADAPTER = TypeAdapter(list[str])
+_DICT_ADAPTER = TypeAdapter(dict[str, str])
 
 
 @chris_plugin(
@@ -38,9 +41,10 @@ _LIST_ADAPTER = TypeAdapter(list[str])
 def main(options: Namespace, inputdir: Path, outputdir: Path):
     matchers, tag_options = parse_args(options.matchers, options.options,
                                        None if options.string_args else inputdir)
-    first_run_files = [] if options.first_run_files is None else _LIST_ADAPTER.validate_json(options.first_run_files)
+    first_run_files = _LIST_ADAPTER.validate_json(options.first_run_files)
+    first_run_tags = _DICT_ADAPTER.validate_json(options.first_run_tags)
     print(DISPLAY_TITLE, flush=True)
-    nifti_dataset(inputdir, outputdir, matchers, tag_options, first_run_files, options.readme)
+    nifti_dataset(inputdir, outputdir, matchers, tag_options, first_run_files, first_run_tags, options.readme)
 
 
 if __name__ == '__main__':

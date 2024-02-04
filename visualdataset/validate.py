@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Iterable, Sequence, Iterator, Mapping
+from typing import Sequence, Mapping
 
 from visualdataset.manifest import VisualDatasetFile, OptionsLink
 from visualdataset.options import ChrisViewerFileOptions, NiivueVolumeSettings

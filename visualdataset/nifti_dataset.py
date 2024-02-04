@@ -8,7 +8,7 @@ from visualdataset.args_types import Matcher
 from visualdataset.index_nifti_dir import index_nifti_dir
 from visualdataset.manifest import VisualDatasetFile, OptionsLink, VisualDatasetManifest
 from visualdataset.nifti_sidecar import create_sidecar
-from visualdataset.validate import check_indexed_file_has_options
+from visualdataset.validate import check_indexed_file_has_options, dict_is_subset
 
 
 def nifti_dataset(
@@ -17,6 +17,7 @@ def nifti_dataset(
         matchers: Sequence[Matcher],
         options: Sequence[OptionsLink],
         first_run_files: Sequence[str],
+        first_run_tags: Mapping[str, str],
         readme: Optional[str]
 ):
     with tqdm(desc='Scanning input directory...'):
@@ -31,6 +32,12 @@ def nifti_dataset(
             print(warning_message)
 
     first_run_index_nums = find_first_run_files(input_dir, index, first_run_files)
+    first_run_file_index = (index[i] for i in first_run_index_nums)
+    first_run_known_tags = (file.tags for file in first_run_file_index)
+    if not all(dict_is_subset(first_run_tags, tags) for tags in first_run_known_tags):
+        print('Error: value for --first-run-tags is not a subset of every matched tag '
+              'for the files of --first-run-files')
+        sys.exit(1)
 
     with tqdm(index, desc='Writing outputs') as pbar:
         for file in pbar:
