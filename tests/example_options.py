@@ -63,6 +63,12 @@ FETAL_ATLAS_OPTIONS: Sequence[OptionsLink] = [
         )
     ),
     OptionsLink(
+        match={'type': 'ventricles'},
+        options=ChrisViewerFileOptions(
+            niivue_defaults=NiivueVolumeSettings(colormap='red')
+        )
+    ),
+    OptionsLink(
         match={'author': 'Ali Gholipour et al., CRL', 'labels': 'tissue'},
         options=ChrisViewerFileOptions(name='Tissue segmentation ("Olympic edition")')
     ),
