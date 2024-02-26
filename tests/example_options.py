@@ -57,14 +57,9 @@ FETAL_ATLAS_OPTIONS: Sequence[OptionsLink] = [
         )
     ),
     OptionsLink(
-        match={'type': 'labels'},
-        options=ChrisViewerFileOptions(
-            niivue_defaults=NiivueVolumeSettings(colormap='roi_i256')
-        )
-    ),
-    OptionsLink(
         match={'type': 'ventricles'},
         options=ChrisViewerFileOptions(
+            name='Ventricles',
             niivue_defaults=NiivueVolumeSettings(colormap='red')
         )
     ),
@@ -75,6 +70,12 @@ FETAL_ATLAS_OPTIONS: Sequence[OptionsLink] = [
     OptionsLink(
         match={'author': 'Ali Gholipour et al., CRL', 'labels': 'parcellation'},
         options=ChrisViewerFileOptions(name='Regional cortex parcellation of the CRL fetal brain atlas.')
+    ),
+    OptionsLink(
+        match={'author': 'Ali Gholipour et al., CRL', 'type': 'labels'},
+        options=ChrisViewerFileOptions(
+            niivue_defaults=NiivueVolumeSettings(colormapLabelFile='CRLAtlasLUT.json')
+        )
     ),
 ]
 

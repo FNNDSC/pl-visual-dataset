@@ -44,10 +44,12 @@ def test_check_indexed_file_has_options_warnings():
     file = VisualDatasetFile(path='iamthe.path', tags={'type': 'MRI', 'creator': 'me'})
     expected = [
         '`name` was defined 2 times for "iamthe.path"',
-        '`author` is unset for "iamthe.path"',
-        '`niivue_defaults.colormap` is unset for "iamthe.path"',
         '`niivue_defaults.opacity` was defined 2 times for "iamthe.path"'
     ]
+    assert check_indexed_file_has_options(file, options) == unordered(expected)
+
+    file = VisualDatasetFile(path='iamthe.path', tags={'type': 'unmatchable'})
+    expected = ['`name` is unset for "iamthe.path"']
     assert check_indexed_file_has_options(file, options) == unordered(expected)
 
 

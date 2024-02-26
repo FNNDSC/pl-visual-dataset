@@ -4,7 +4,7 @@ from typing import Sequence, Mapping
 from visualdataset.manifest import VisualDatasetFile, OptionsLink
 from visualdataset.options import ChrisViewerFileOptions, NiivueVolumeSettings
 
-IMPORTANT_KEYS = ('name', 'author', 'niivue_defaults.colormap')
+IMPORTANT_KEYS = ('name',)
 """
 Keys of ``ChrisViewerFileOptions`` which are important. If a file lacks these options,
 then warnings should be printed.

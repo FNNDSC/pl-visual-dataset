@@ -5,13 +5,13 @@ from typing import Sequence, Optional, Mapping, Set
 from tqdm import tqdm
 
 from visualdataset.args_types import Matcher
-from visualdataset.index_nifti_dir import index_nifti_dir
+from visualdataset.index_brain_dir import index_brain_dir
 from visualdataset.manifest import VisualDatasetFile, OptionsLink, VisualDatasetManifest
-from visualdataset.nifti_sidecar import create_sidecar
+from visualdataset.volume_sidecar import create_sidecar
 from visualdataset.validate import check_indexed_file_has_options, dict_is_subset
 
 
-def nifti_dataset(
+def brain_dataset(
         input_dir: Path,
         output_dir: Path,
         matchers: Sequence[Matcher],
@@ -21,7 +21,7 @@ def nifti_dataset(
         readme: Optional[str]
 ):
     with tqdm(desc='Scanning input directory...'):
-        index = [i.model_copy(update={'has_sidecar': True}) for i in index_nifti_dir(input_dir, matchers)]
+        index = [i.model_copy(update={'has_sidecar': True}) for i in index_brain_dir(input_dir, matchers)]
 
     if not index:
         print(f'Error: nothing matched for: {[m.regex for m in matchers]}')

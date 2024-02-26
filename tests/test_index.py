@@ -2,15 +2,15 @@ from pathlib import Path
 import pytest
 from pytest_unordered import unordered
 
-from visualdataset.index_nifti_dir import index_nifti_dir
+from visualdataset.index_brain_dir import index_brain_dir
 from tests.example_matchers import FETAL_ATLAS_MATCHERS
 from visualdataset.manifest import VisualDatasetFile
 
 
 def test_index_dir(tmp_path: Path):
     example_files = [
-        'Age 36/serag.nii.gz',
-        'Age 37/ali.nii.gz',
+        'Age 36/serag_template.nii.gz',
+        'Age 37/ali_template.nii.gz',
         'Age 37/ali_regional.nii.gz',
         'Age 37/ali_tissue.nii.gz',
     ]
@@ -19,10 +19,10 @@ def test_index_dir(tmp_path: Path):
         p.parent.mkdir(parents=True, exist_ok=True)
         p.touch()
 
-    actual = list(index_nifti_dir(tmp_path, FETAL_ATLAS_MATCHERS))
+    actual = list(index_brain_dir(tmp_path, FETAL_ATLAS_MATCHERS))
     expected = [
         VisualDatasetFile(
-            path='Age 36/serag.nii.gz',
+            path='Age 36/serag_template.nii.gz',
             tags={
                 'age': '36',
                 'author': 'Ahmed Serag et al.',
@@ -31,7 +31,7 @@ def test_index_dir(tmp_path: Path):
             },
         ),
         VisualDatasetFile(
-            path='Age 37/ali.nii.gz',
+            path='Age 37/ali_template.nii.gz',
             tags={
                 'age': '37',
                 'author': 'Ali Gholipour et al., CRL',

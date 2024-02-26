@@ -21,6 +21,15 @@ class NiivueVolumeSettings(TypedDict):
     visible: NotRequired[bool]
     colorbarVisible: NotRequired[bool]
 
+    colormapLabelFile: NotRequired[str]
+    """
+    File name containing JSON object to be used for the value of ``colormapLabel``, which
+    sets the color map for a label-type volume (e.g. segmentation).
+    
+    ``colormapLabelFile`` can be relative to the input directory, or it may be a pre-installed file.
+    It must be in the NiiVue JSON format.
+    """
+
     __pydantic_config__ = ConfigDict(extra='forbid')
 
 
