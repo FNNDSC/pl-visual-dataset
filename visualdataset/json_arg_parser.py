@@ -7,16 +7,23 @@ from pydantic import BaseModel, ValidationError
 
 from visualdataset.args_types import Matcher
 from visualdataset.manifest import OptionsLink
+from visualdataset.wellknown import FREESURFER_MATCHERS, FREESURFER_OPTIONS
 
 
-def parse_args(matchers: str | None, options: str | None, input_dir: Path | None,
+def parse_args(input_dir: Path, mode: str, matchers: str | None, options: str | None
                ) -> tuple[Sequence[Matcher], Sequence[OptionsLink]]:
-    if input_dir:
+    mode = mode.lower()
+    if mode.startswith('freesurfer'):
+        return FREESURFER_MATCHERS, FREESURFER_OPTIONS
+    if mode == 'file':
         matchers_str = '[]' if matchers is None else (input_dir / matchers).read_text()
         options_str = '[]' if options is None else (input_dir / options).read_text()
-    else:
+    elif mode == 'string':
         matchers_str = '[]' if matchers is None else matchers
         options_str = '[]' if options is None else options
+    else:
+        print(f'Unsupported option --mode={mode}')
+        sys.exit(1)
     matchers_list = deserialize_list(matchers_str, Matcher, '--matchers')
     options_list = deserialize_list(options_str, OptionsLink, '--options')
     return matchers_list, options_list

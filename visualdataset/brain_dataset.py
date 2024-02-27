@@ -1,6 +1,8 @@
+import shutil
 import sys
 from pathlib import Path
-from typing import Sequence, Optional, Mapping, Set
+from typing import Sequence, Optional, Mapping, Set, Iterator
+import importlib.resources
 
 from tqdm import tqdm
 
@@ -38,6 +40,8 @@ def brain_dataset(
         print('Error: value for --first-run-tags is not a subset of every matched tag '
               'for the files of --first-run-files')
         sys.exit(1)
+
+    copy_colormaplabel_files(options, input_dir, output_dir)
 
     with tqdm(index, desc='Writing outputs') as pbar:
         for file in pbar:
@@ -91,3 +95,32 @@ def find_first_run_files(
             print(f'File was not matched: {file}')
             sys.exit(1)
     return first_run_index_nums
+
+
+def copy_colormaplabel_files(options: Sequence[OptionsLink], input_dir: Path, output_dir: Path):
+    for file in colormaplabel_files_of(options):
+        shutil.copy(resolve_colormaplabel(file, input_dir), output_dir / file)
+
+
+def resolve_colormaplabel(file: str, input_dir: Path) -> Path:
+    """
+    If ``file`` is found in ``input_dir``, return its path.
+    Else, look for the file in this package's files.
+    """
+    path = input_dir / file
+    if path.is_file():
+        return path
+    trav = importlib.resources.files(__package__).joinpath('colormaps', file)
+    if trav.is_file():
+        with importlib.resources.as_file(trav) as trav_path:
+            return trav_path
+    print(f'colormapLabel not found: "{file}"')
+    sys.exit(1)
+
+
+def colormaplabel_files_of(options: Sequence[OptionsLink]) -> Iterator[str]:
+    return filter(lambda x: x is not None, map(colormaplabel_of, options))
+
+
+def colormaplabel_of(option: OptionsLink) -> Optional[str]:
+    return option.options.get('niivue_defaults', {}).get('colormapLabelFile', None)

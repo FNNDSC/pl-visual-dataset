@@ -26,6 +26,9 @@ setup(
     author_email='dev@babymri.org',
     url='https://github.com/FNNDSC/pl-visual-dataset',
     packages=['visualdataset'],
+    package_data={
+        'visualdataset': ['colormaps/*']
+    },
     install_requires=['chris_plugin'],
     license='MIT',
     entry_points={
