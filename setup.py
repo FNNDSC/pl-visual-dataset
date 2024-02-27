@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import re
 
 _version_re = re.compile(r"(?<=^__version__ = (\"|'))(.+)(?=\"|')")
@@ -25,7 +25,7 @@ setup(
     author='FNNDSC',
     author_email='dev@babymri.org',
     url='https://github.com/FNNDSC/pl-visual-dataset',
-    packages=['visualdataset'],
+    packages=find_packages('.', exclude='tests'),
     package_data={
         'visualdataset': ['colormaps/*']
     },
