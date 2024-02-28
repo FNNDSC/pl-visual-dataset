@@ -126,7 +126,7 @@ jobs:
 
       - name: Update DockerHub description
         if: steps.upload.outcome == 'success'
-        uses: peter-evans/dockerhub-description@v3
+        uses: peter-evans/dockerhub-description@v4
         continue-on-error: true  # it is not crucial that this works
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
