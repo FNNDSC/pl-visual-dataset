@@ -14,14 +14,14 @@ from visualdataset.brain_dataset import brain_dataset
 parser = ArgumentParser(description='Prepares a dataset for use with the ChRIS_ui '
                                     '"Visual Datasets" feature.',
                         formatter_class=ArgumentDefaultsHelpFormatter)
-parser.add_argument('--mode', type=str, default='file', choices=['file', 'string', 'freesurfer-7.3.3', 'malpem-1.3'],
-                    help='File matching and option selection mode. file=accept JSON files from '
-                         '--matchers and --options. string=accept JSON strings from --matchers and --options. '
-                         'freesurfer=built-in support for the FreeSurfer output files.')
+parser.add_argument('--mode', type=str, default='none', choices=['freesurfer-7.3.3', 'malpem-1.3', 'none'],
+                    help='Use default values for --matchers and --options for a well known program\'s output. ')
 parser.add_argument('--matchers', type=str,
-                    help='Regular expressions used to assign tags to files')
+                    help='Regular expressions used to assign tags to files, '
+                         'as stringified JSON or a path to a file relative to inputdir')
 parser.add_argument('--options', type=str,
-                    help='Metadata to go with tag sets')
+                    help='Metadata to go with tag sets, '
+                         'as stringified JSON or a path to a file relative to inputdir')
 parser.add_argument('--first-run-files', type=str, default='[]',
                     help='List of files to show on first run, '
                          'as a stringified JSON list of paths relative to inputdir')
