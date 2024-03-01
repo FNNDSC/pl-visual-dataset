@@ -58,12 +58,20 @@ class VisualDatasetManifest(BaseModel):
     __pydantic_config__ = ConfigDict(extra='forbid')
 
     def sort(self) -> Self:
+        sorted_tags = {
+            k: sorted(v)
+            for k, v in sorted(self.tags.items())
+        }
+        sorted_files = sorted(self.files, key=_get_path)
+        sorted_file_paths = [f.path for f in sorted_files]
+        sorted_first_run_files = [
+            sorted_file_paths.index(self.files[i].path)
+            for i in self.first_run_files
+        ]
         return self.model_copy(update={
-            'tags': {
-                k: sorted(v)
-                for k, v in sorted(self.tags.items())
-            },
-            'files': sorted(self.files, key=_get_path)
+            'tags': sorted_tags,
+            'files': sorted_files,
+            'first_run_files': sorted_first_run_files
         })
 
 
