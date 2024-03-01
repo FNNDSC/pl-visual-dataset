@@ -58,7 +58,7 @@ def brain_dataset(
     )
 
     manifest_path = output_dir / '.chrisvisualdataset.tagmanifest.json'
-    manifest_path.write_text(manifest.model_dump_json())
+    manifest_path.write_text(manifest.sort().model_dump_json())
 
     if readme is not None:
         readme_path = output_dir / 'README.txt'

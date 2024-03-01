@@ -1,6 +1,7 @@
 from pathlib import PurePath
+from typing import Sequence, Mapping, Set, Self
+
 from pydantic import BaseModel, ConfigDict
-from typing import Sequence, FrozenSet, Tuple, Mapping, Optional, Set
 
 from visualdataset.options import ChrisViewerFileOptions
 
@@ -37,7 +38,7 @@ class VisualDatasetManifest(BaseModel):
     """
     A list of all the files and metadata of a "visual dataset".
     """
-    tags: Mapping[str, Set[str]]
+    tags: Mapping[str, Set[str] | Sequence[str]]
     """
     All known tags and all known values for each tag.
     """
@@ -55,3 +56,16 @@ class VisualDatasetManifest(BaseModel):
     """
 
     __pydantic_config__ = ConfigDict(extra='forbid')
+
+    def sort(self) -> Self:
+        return self.model_copy(update={
+            'tags': {
+                k: sorted(v)
+                for k, v in sorted(self.tags.items())
+            },
+            'files': sorted(self.files, key=_get_path)
+        })
+
+
+def _get_path(x: VisualDatasetFile) -> str:
+    return str(x.path)
