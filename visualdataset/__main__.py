@@ -2,6 +2,7 @@
 import os.path
 from argparse import ArgumentParser, Namespace, ArgumentDefaultsHelpFormatter
 from pathlib import Path
+from typing import Optional
 
 from chris_plugin import chris_plugin
 from pydantic import TypeAdapter
@@ -9,12 +10,11 @@ from pydantic import TypeAdapter
 from visualdataset import DISPLAY_TITLE
 from visualdataset.json_arg_parser import parse_args
 from visualdataset.brain_dataset import brain_dataset
-from visualdataset.options import ChrisViewerFileOptions
 
 parser = ArgumentParser(description='Prepares a dataset for use with the ChRIS_ui '
                                     '"Visual Datasets" feature.',
                         formatter_class=ArgumentDefaultsHelpFormatter)
-parser.add_argument('--mode', type=str, default='file', choices=['file', 'string', 'freesurfer-7.3.3'],
+parser.add_argument('--mode', type=str, default='file', choices=['file', 'string', 'freesurfer-7.3.3', 'malpem-1.3'],
                     help='File matching and option selection mode. file=accept JSON files from '
                          '--matchers and --options. string=accept JSON strings from --matchers and --options. '
                          'freesurfer=built-in support for the FreeSurfer output files.')
@@ -46,12 +46,24 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     first_run_files = _LIST_ADAPTER.validate_json(options.first_run_files)
     first_run_tags = _DICT_ADAPTER.validate_json(options.first_run_tags)
 
-    if not first_run_files and options.mode.lower().startswith('freesurfer'):
-        if t1 := next(filter(os.path.isfile, inputdir.rglob('T1.mgz')), None):
-            first_run_files.append(str(t1.relative_to(inputdir)))
+    if not first_run_files:
+        if options.mode.lower().startswith('freesurfer'):
+            first_run_files.extend(find_first_matching(inputdir, 'T1.mgz'))
+        elif options.mode.lower().startswith('malpem'):
+            first_run_files.extend(find_first_matching(inputdir, '*_N4_masked.nii.gz'))
+            first_run_files.extend(find_first_matching(inputdir, '*_MALPEM.nii.gz'))
 
     print(DISPLAY_TITLE, flush=True)
     brain_dataset(inputdir, outputdir, matchers, tag_options, first_run_files, first_run_tags, options.readme)
+
+
+def find_first_matching(input_dir: Path, glob: str) -> list[str]:
+    matches = filter(os.path.isfile, input_dir.rglob(glob))
+    rel = map(lambda p: p.relative_to(input_dir), matches)
+    rel_as_str = map(str, rel)
+    if some := next(rel_as_str, None):
+        return [some]
+    return []
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 
 from visualdataset.args_types import Matcher
 from visualdataset.manifest import OptionsLink
-from visualdataset.wellknown import FREESURFER_MATCHERS, FREESURFER_OPTIONS
+from visualdataset.wellknown import FREESURFER_MATCHERS, FREESURFER_OPTIONS, MALPEM_MATCHERS, MALPEM_OPTIONS
 
 
 def parse_args(input_dir: Path, mode: str, matchers: str | None, options: str | None
@@ -15,6 +15,8 @@ def parse_args(input_dir: Path, mode: str, matchers: str | None, options: str | 
     mode = mode.lower()
     if mode.startswith('freesurfer'):
         return FREESURFER_MATCHERS, FREESURFER_OPTIONS
+    if mode.startswith('malpem'):
+        return MALPEM_MATCHERS, MALPEM_OPTIONS
     if mode == 'file':
         matchers_str = '[]' if matchers is None else (input_dir / matchers).read_text()
         options_str = '[]' if options is None else (input_dir / options).read_text()
