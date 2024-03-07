@@ -5,12 +5,16 @@ from visualdataset.manifest import OptionsLink
 from visualdataset.options import ChrisViewerFileOptions, NiivueVolumeSettings
 
 MALPEM_MATCHERS: Sequence[Matcher] = [
-    Matcher(key='type', value='T1 MRI', regex=r'.+_N4(_masked)?\.nii\.gz'),
+    Matcher(key='type', value='T1 MRI', regex=r'.+_(no)?N4(_masked)?\.nii\.gz'),
     Matcher(key='type', value='labels', regex=r'.+_MALPEM(_tissues)?\.nii\.gz'),
-    Matcher(key='name', value='Head', regex=r'.+_N4\.nii\.gz'),
-    Matcher(key='name', value='Brain', regex=r'.+_N4_masked\.nii\.gz'),
+    Matcher(key='name', value='Head', regex=r'.+_(no)?N4\.nii\.gz'),
+    Matcher(key='name', value='Brain', regex=r'.+_(no)?N4_masked\.nii\.gz'),
     Matcher(key='name', value='MALP-EM tissue segmentation', regex=r'.+_MALPEM_tissues\.nii\.gz'),
     Matcher(key='name', value='MALP-EM structure segmentation', regex=r'.+_MALPEM\.nii\.gz'),
+
+    # special matcher for Stefan's customized MALP-EM pipeline
+    Matcher(key='type', value='labels', regex=r'.+_MALPEM_corrected\.nii\.gz'),
+    Matcher(key='name', value='Corrected MALP-EM structure segmentation', regex=r'.+_MALPEM_corrected\.nii\.gz'),
 ]
 
 MALPEM_OPTIONS: Sequence[OptionsLink] = [
@@ -47,6 +51,13 @@ MALPEM_OPTIONS: Sequence[OptionsLink] = [
         match={'name': 'MALP-EM structure segmentation'},
         options=ChrisViewerFileOptions(
             name='MALP-EM structure segmentation',
+            niivue_defaults=NiivueVolumeSettings(colormapLabelFile='MALP-EM.v1.3.json', opacity=0.2)
+        )
+    ),
+    OptionsLink(
+        match={'name': 'Corrected MALP-EM structure segmentation'},
+        options=ChrisViewerFileOptions(
+            name='Corrected MALP-EM structure segmentation',
             niivue_defaults=NiivueVolumeSettings(colormapLabelFile='MALP-EM.v1.3.json', opacity=0.2)
         )
     ),
